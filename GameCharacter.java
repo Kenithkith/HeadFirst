@@ -1,9 +1,9 @@
 import java.io.*;
 
 public class GameCharacter implements Serializable {
-	int power;
-	String type;
-	String[] weapons;
+	private int power;
+	private String type;
+	private String[] weapons;
 	
 	public GameCharacter(int p, String t, String[] w) {
 		this.power = p;
