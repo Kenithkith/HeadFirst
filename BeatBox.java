@@ -1,13 +1,34 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.sound.midi.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class BeatBox {
 
 	JPanel mainPanel;
-	ArrayList<JCheckBox> checkBoxList;
+	ArrayList<JCheckBox> checkboxList;
 	Sequencer sequencer;
 	Sequence sequence;
 	Track track;
@@ -31,7 +52,7 @@ public class BeatBox {
 		JPanel background = new JPanel(layout);
 		background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
-		checkBoxList = new ArrayList<JCheckBox>();
+		checkboxList = new ArrayList<JCheckBox>();
 		Box buttonBox = new Box(BoxLayout.Y_AXIS);
 		
 		JButton start = new JButton("Start");
@@ -49,6 +70,18 @@ public class BeatBox {
 		JButton downTempo = new JButton("Tempo Down");
 		downTempo.addActionListener(new MyDownTempoListener());
 		buttonBox.add(downTempo);
+		
+		JButton send = new JButton("Serialize It");
+		send.addActionListener(new MySendListener());
+		buttonBox.add(send);
+		
+		JButton restore = new JButton("Restore It");
+		restore.addActionListener(new MyReadInListener());
+		buttonBox.add(restore);
+		
+		JButton clear = new JButton("Clear Selection");
+		clear.addActionListener(new MyClearListener());
+		buttonBox.add(clear);
 		
 		Box nameBox = new Box(BoxLayout.Y_AXIS);
 		Font bigFont1 = new Font("serif", Font.BOLD, 16);
@@ -75,7 +108,7 @@ public class BeatBox {
 		for (int i = 0; i < 256; i++) {
 			JCheckBox c = new JCheckBox();
 			c.setSelected(false);
-			checkBoxList.add(c);
+			checkboxList.add(c);
 			mainPanel.add(c);
 		}
 		
@@ -122,7 +155,7 @@ public class BeatBox {
 			// Do this for each of the BEATS for this row.
 			for (int j = 0; j < 16; j++ ) {
 				
-				JCheckBox jc = (JCheckBox) checkBoxList.get(j + (16*i));
+				JCheckBox jc = checkboxList.get(j + (16*i));
 				
 				// Is the checkBox at this beat selected? If yes, put the key
 				// value in this slot in the array (the slot that represents 
@@ -186,6 +219,73 @@ public class BeatBox {
 		}
 	} // close MyDownTempoListener inner class.
 	
+	public class MySendListener implements ActionListener {
+		public void actionPerformed(ActionEvent a) {
+			
+			// Make a boolean array to hold the state of each checkbox.
+			boolean[] checkboxState = new boolean[256];
+			
+			for (int i = 0; i < 256; i++) {
+				
+				// Walk through the checkboxList (ArrayList of checkboxes),
+				// and get the state of each one; then add it to boolean array.
+				JCheckBox check = (JCheckBox) checkboxList.get(i);
+				if (check.isSelected()) {
+					checkboxState[i] = true;
+				}
+			}
+			
+			try {
+				FileOutputStream fileStream = new FileOutputStream(new File ("Checkbox.ser"));
+				ObjectOutputStream os = new ObjectOutputStream(fileStream);
+				os.writeObject(checkboxState);
+			} catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	public class MyReadInListener implements ActionListener {
+		public void actionPerformed(ActionEvent a) {
+			
+			boolean[] checkboxState = null;
+			
+			try {
+				FileInputStream fileIn = new FileInputStream(new File ("Checkbox.ser"));
+				ObjectInputStream is = new ObjectInputStream(fileIn);
+				checkboxState = (boolean[]) is.readObject();
+				
+			} catch(Exception ex) {
+				ex.printStackTrace();
+			}
+			
+			for (int i = 0; i < 256; i++) {
+				
+				JCheckBox check = (JCheckBox) checkboxList.get(i);
+				if (checkboxState[i]) {
+					check.setSelected(true);
+				} else {
+					check.setSelected(false);
+				}
+			}
+			
+			sequencer.stop();
+			buildTrackAndStart();
+		}
+	}
+	
+	public class MyClearListener implements ActionListener {
+		public void actionPerformed(ActionEvent a) {
+			
+			for (int i = 0; i < 256; i++) {
+			
+				JCheckBox clearBox = checkboxList.get(i);
+				
+				clearBox.setSelected(false);
+				
+			}
+		}
+	}
 	
 	// This makes events for one instrument at a time, for all 16 beats.
 	// So it might get an int[] for the Bass drum, and each index in the
