@@ -2,8 +2,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-DungeonGame implements Serializable {
+class DungeonGame implements Serializable {
 
 	public int x = 3;
 	transient long y = 4;
