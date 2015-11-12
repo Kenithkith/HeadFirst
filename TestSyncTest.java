@@ -8,9 +8,7 @@ class TestSync implements Runnable {
 		// balance on each iteration.
 		for (int i = 0; i < 50; i++) {
 			increment();
-			System.out.println(Thread.currentThread().getName()
-					+ " says the balance is now " + balance + ".");
-
+		
 		}
 	}
 
@@ -22,6 +20,9 @@ class TestSync implements Runnable {
 		// value is.
 		int i = balance;
 		balance = i + 1;
+		
+		System.out.println(Thread.currentThread().getName()
+			+ " says the balance is now " + balance + ".");
 
 	}
 }
