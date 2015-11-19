@@ -1,8 +1,18 @@
+import java.util.Scanner;
+
 public class DayCounter {
 	public static void main(String[] args) {
 
-		int yearIn = 2000;
-		int monthIn = 2;
+		int yearIn;
+		int monthIn;
+		
+		Scanner input = new Scanner(System.in);
+		System.out.println("Select a year, using the 4 digit format.");
+		yearIn = input.nextInt();
+		
+		System.out.println("Select a month, using digits 1 through 12.");
+		monthIn = input.nextInt();
+		
 
 		if (args.length > 0)
 			monthIn = Integer.parseInt(args[1]);
@@ -11,7 +21,8 @@ public class DayCounter {
 
 		System.out.println(monthIn + "/" + yearIn + " has "
 				+ countDays(monthIn, yearIn) + " days.");
-
+		
+	input.close();
 	}
 	
 	static int countDays(int month, int year) {
@@ -48,4 +59,6 @@ public class DayCounter {
 		}
 		return count;
 	}
+	
+	
 }
