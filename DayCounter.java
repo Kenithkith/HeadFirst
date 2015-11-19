@@ -51,7 +51,7 @@ public class DayCounter {
 					count = 29;
 				else
 					count = 28;
-				if ((year % 100 == 0) & (year % 4 != 0))
+				if ((year % 100 == 0) & (year % 400 != 0))
 					count = 28;
 				
 				
