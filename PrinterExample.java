@@ -21,4 +21,10 @@ class SubPrinter extends PrinterExample {
 		obj.printMe();
 	}
 	
+		void printMe() {
+		System.out.println("x is " + x + ", y is " + y + ", and z is " + z + ".");
+		System.out.println("I am an instance of the class "
+				+ this.getClass().getName() + ".");
+	}
+	
 }
