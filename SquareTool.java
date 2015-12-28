@@ -1,0 +1,41 @@
+
+public class SquareTool {
+	
+	public SquareTool(String input) {
+		try {
+			float in = Float.parseFloat(input);
+			Square sq = new Square(in);
+			float result = sq.value;
+			
+			System.out.println("The square of " + input + " is " + result + ". DUH.");
+			
+		} catch (NumberFormatException nfe) {
+			System.out.println(input + " is not a valid number.");
+			
+		}
+	}
+
+	
+	class Square {
+		
+		float value;
+		
+		Square(float x) {
+			
+			value = x * x;
+			
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		if(args.length < 1) {
+			System.out.println("You didn't give me a number, moron.");
+		
+		} else {
+			SquareTool dr = new SquareTool(args[0]);
+			
+		}
+	}
+	
+}
