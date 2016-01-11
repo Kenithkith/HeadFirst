@@ -28,7 +28,7 @@ public class PrimeThreads {
 			for (int j = 0; j < finder.length; j++ ) {
 				if (finder[j] == null) continue;
 				
-				if (finder[j].finished) {
+				if (!finder[j].finished) {
 					complete = false;
 				} else {
 					displayResult(finder[j]);
