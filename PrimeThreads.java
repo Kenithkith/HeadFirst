@@ -12,12 +12,17 @@ public class PrimeThreads {
 		for (int i = 0; i < args.length; i++ ) {
 			try {
 				long count = Long.parseLong(args[i]);
-				finder[i] = new PrimeFinder(count);
+				try {
+					finder[i] = new PrimeFinder(count);
+				} catch (NegativeNumberException nne) {
+					System.out.println("Error: " + nne.getMessage() );
+				
+				}
 				System.out.println("Looking for prime " + count + ".");
 				
 			} catch (NumberFormatException nfe) {
 				System.out.println("Error: " + nfe.getMessage());
-			}
+			} 
 		}
 		
 		boolean complete = false;
